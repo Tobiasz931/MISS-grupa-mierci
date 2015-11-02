@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1446438860 source:/home/tobiasz/MISS-grupa-mierci/zad2/zad2/main.cpp
+	<stdio.h>
+	<iostream>
+	<gmpxx.h>
+	<iomanip>
+	<string>
+	<vector>
+	<sstream>
+

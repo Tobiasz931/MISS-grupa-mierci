@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 	{
         d = 5;
 	}
-	string num;
+	string num, licznikStr, mianownikStr;
 	vector<Liczba> v, KplusVec, KminusVec;
     bool mian = true;
     Liczba l;
@@ -51,19 +51,21 @@ int main(int argc, char **argv)
 
 	while(cin >> num)
 	{
-        if(mian)
+        for(int i = 0; i < num.size(); i++)
         {
-            mpz_init(l.licznik);
-            mpz_set_str (l.licznik, num.c_str(), 10);
-            mian = false;
+            if(num[i] == '/')
+            {
+                licznikStr = num.substr(0, i);
+                mianownikStr = num.substr(i + 1, num.size());
+                break;
+            }
         }
-        else
-        {
-            mpz_init(l.mianownik);
-            mpz_set_str (l.mianownik, num.c_str(), 10);
-            mian = true;
-            v.push_back(l);
-        }
+        mpz_init(l.licznik);
+        mpz_set_str (l.licznik, licznikStr.c_str(), 10);
+        mpz_init(l.mianownik);
+        mpz_set_str (l.mianownik, mianownikStr.c_str(), 10);
+        mian = true;
+        v.push_back(l);
 	}
 	n = v.size();
 	sort(v.begin(), v.end(), comparator());

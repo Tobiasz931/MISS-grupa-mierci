@@ -177,9 +177,17 @@ int main(int argc, char **argv)
         mpz_set_si(a.licznik, i*i);
         mpz_set_si(a.mianownik, 100);
         A.push_back(a);
+
+//        char* chars = NULL;
+//    chars = mpz_get_str(chars, 10, a.licznik);
+//	string charStr(chars);
+//	cout << charStr << '\\' << endl;
+//	chars = mpz_get_str(chars, 10, a.mianownik);
+//	string charStr2(chars);
+//	cout << charStr2 << endl;
     }
 //inicjalizacja wektora Y
-    for(int i=0; i<=n; i++)
+    for(int i=0; i<=k; i++) //miejsce zerowe bedzie nieuzywane
     {
         Liczba y;
         mpz_init(y.licznik);
@@ -196,11 +204,26 @@ int main(int argc, char **argv)
 //jezeli X z wektora v wpada konkretnie w dany przedzial, zwiekszamy licznik
             if(((comp(A[j-1], v[i]) == 0) || (comp(A[j-1], v[i]) < 0)) && (comp(A[j], v[i]) > 0))
             {
-                mpz_set(Y[j].licznik, Y[j].licznik+1);
+                mpz_add_ui(Y[j].licznik, Y[j].licznik, 1);
                 break;
             }
         }
     }
+//    for(int j=1; j<=k; j++)
+//        {
+//        Liczba z;
+//        mpz_init(z.licznik);
+//        mpz_init(z.mianownik);
+//        mpz_set(z.licznik, Y[j].licznik);
+//        mpz_set(z.mianownik, Y[j].mianownik);
+//    char* chars = NULL;
+//    chars = mpz_get_str(chars, 10, z.licznik);
+//	string charStr(chars);
+//	cout << j << ": " << charStr << " na ";
+//	chars = mpz_get_str(chars, 10, z.mianownik);
+//	string charStr2(chars);
+//	cout << charStr2 << endl;
+//	}
 
 //obliczanie V - rozwiniety wzor. Oryginalnie bylo suma (Yi - n*pi)^2/ n*pi
 //pamietajac ze nasze Y ma w mianowniku 1 a kazde p_i to 1/k
@@ -213,7 +236,7 @@ int main(int argc, char **argv)
     mpz_set_si(V.licznik, 0);
     mpz_set_si(V.mianownik, n);
 
-    for(int i=0; i<=k; i++)
+    for(int i=1; i<=k; i++)
     {
         mpz_t licznik;
         mpz_init(licznik);

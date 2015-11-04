@@ -30,7 +30,29 @@ struct comparator
         return (!comp(l1, l2));
     }
 };
+
 int d,n = 0,p = 1;
+
+void wypisz_z_zerami(mpz_t number)
+{
+    char* chars = NULL;
+    chars = mpz_get_str(chars, 10, number);
+	string charStr(chars);
+	if(charStr.size() < d + 1)
+	{
+		string tmp = "";
+		for(int i=0; i < d+1 - charStr.size(); i++)
+		{
+			tmp += "0";
+		}
+		charStr = tmp + charStr;
+	}
+	charStr = charStr.substr(0, charStr.size() - d) + "." + charStr.substr(charStr.size() - d, charStr.size());
+	charStr = charStr.substr(0, charStr.find_last_not_of('0') + 1);
+	if(charStr[charStr.length()-1] == '.')
+		charStr = charStr.substr(0, charStr.length()-1);
+	cout << charStr << endl;
+};
 
 int main(int argc, char **argv)
 {
@@ -135,46 +157,6 @@ int main(int argc, char **argv)
     mpz_mul(Kminus, Kminus, multiplayer);
     mpz_tdiv_q(Kminus, Kminus, KminusVec[KminusIndex].mianownik);
 
-/*********************WYPISYWANIE K+ i K-:***************************/
-
-	char* KplusChars = NULL;
-    KplusChars = mpz_get_str(KplusChars, 10, Kplus);
-	string KplusStr(KplusChars);
-	if(KplusStr.size() < d + 1)
-	{
-		string tmp = "";
-		for(int i=0; i < d+1 - KplusStr.size(); i++)
-		{
-			tmp += "0";
-		}
-		KplusStr = tmp + KplusStr;
-	}
-	KplusStr = KplusStr.substr(0, KplusStr.size() - d) + "." + KplusStr.substr(KplusStr.size() - d, KplusStr.size());
-	KplusStr = KplusStr.substr(0, KplusStr.find_last_not_of('0') + 1);
-	if(KplusStr[KplusStr.length()-1] == '.')
-		KplusStr = KplusStr.substr(0, KplusStr.length()-1);
-	cout << KplusStr << endl;
-
-    char* KminusChars = NULL;
-    KminusChars = mpz_get_str(KminusChars, 10, Kminus);
-	string KminusStr(KminusChars);
-	if(KminusStr.size() < d + 1)
-	{
-		string tmp = "";
-		for(int i=0; i < d+1 - KminusStr.size(); i++)
-		{
-			tmp += "0";
-		}
-		KminusStr = tmp + KminusStr;
-	}
-	KminusStr = KminusStr.substr(0, KminusStr.size() - d) + "." + KminusStr.substr(KminusStr.size() - d, KminusStr.size());
-	KminusStr = KminusStr.substr(0, KminusStr.find_last_not_of('0') + 1);
-	if(KminusStr[KminusStr.length()-1] == '.')
-		KminusStr = KminusStr.substr(0, KminusStr.length()-1);
-	cout << KminusStr << endl;
-
-/********************KONIEC WYPISYWANIA K+ i K-:*************************/
-
 /********************LICZENIE CHI KWADRAT:*************************/
     int k = 10;
     vector<Liczba> A;
@@ -243,11 +225,22 @@ int main(int argc, char **argv)
         mpz_add(V.licznik, V.licznik, licznik);
 
     }
+//dopisanie zer
+    mpz_mul(V.licznik, V.licznik, multiplayer);
+
     mpz_t V_sum;
     mpz_init(V_sum);
     mpz_tdiv_q(V_sum, V.licznik, V.mianownik);
 
 /********************KONIEC LICZENIA CHI KWADRAT:*************************/
+
+/*********************WYPISYWANIE:***************************/
+
+    wypisz_z_zerami(V_sum);
+	wypisz_z_zerami(Kplus);
+	wypisz_z_zerami(Kminus);
+
+/********************KONIEC WYPISYWANIA:*************************/
 
 	return 0;
 }

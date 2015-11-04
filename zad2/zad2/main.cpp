@@ -173,5 +173,79 @@ int main(int argc, char **argv)
 
 /********************KONIEC WYPISYWANIA K+ i K-:*************************/
 
+/********************LICZENIE CHI KWADRAT:*************************/
+    int k = 10;
+    vector<Liczba> A;
+    vector<Liczba> Y;
+    //wg eti2011 prawd. tu wszedzie jest rowne i wynosi 1/l.przedzialow = 1/k, wiec zrobie jedno p
+    Liczba p;
+    mpz_init(p.licznik);
+    mpz_init(p.mianownik);
+    mpz_set_si(p.licznik, 1);
+    mpz_set_si(p.mianownik, k);
+
+//punkty wyznaczajace przedzialy
+    for(int i=0; i<=k; i++)
+    {
+        Liczba a;
+        mpz_init(a.licznik);
+        mpz_init(a.mianownik);
+        mpz_set_si(a.licznik, i*i);
+        mpz_set_si(a.mianownik, 100);
+        A.push_back(a);
+    }
+//inicjalizacja wektora Y
+    for(int i=0; i<=n; i++)
+    {
+        Liczba y;
+        mpz_init(y.licznik);
+        mpz_init(y.mianownik);
+        mpz_set_si(y.licznik, 0);
+        mpz_set_si(y.mianownik, 1);
+        Y.push_back(y);
+    }
+//wypelnianie wektora Y
+    for(int i=0; i<=n; i++)
+    {
+        for(int j=1; j<=k; j++)
+        {
+//jezeli X z wektora v wpada konkretnie w dany przedzial, zwiekszamy licznik
+            if(((comp(A[j-1], v[i]) == 0) || (comp(A[j-1], v[i]) < 0)) && (comp(A[j], v[i]) > 0))
+            {
+                mpz_set(Y[j].licznik, Y[j].licznik+1);
+                break;
+            }
+        }
+    }
+
+//obliczanie V - rozwiniety wzor. Oryginalnie bylo suma (Yi - n*pi)^2/ n*pi
+//pamietajac ze nasze Y ma w mianowniku 1 a kazde p_i to 1/k
+//wiec zeby bylo tylko jedno dzielenie to przeksztalcone do suma k(ky-n)^2 / n
+//gdzie y to liczba z licznika Y, a ze mianownik wspolny to nawet przeksztalcac nie trzeba
+
+    Liczba V;
+    mpz_init(V.licznik);
+    mpz_init(V.mianownik);
+    mpz_set_si(V.licznik, 0);
+    mpz_set_si(V.mianownik, n);
+
+    for(int i=0; i<=k; i++)
+    {
+        mpz_t licznik;
+        mpz_init(licznik);
+        mpz_set_si(licznik, k);
+        mpz_mul(licznik, licznik, Y[i].licznik);
+        mpz_sub_ui(licznik, licznik, n);
+        mpz_mul(licznik, licznik, licznik);
+        mpz_mul_ui(licznik, licznik, k);
+        mpz_add(V.licznik, V.licznik, licznik);
+
+    }
+    mpz_t V_sum;
+    mpz_init(V_sum);
+    mpz_tdiv_q(V_sum, V.licznik, V.mianownik);
+
+/********************KONIEC LICZENIA CHI KWADRAT:*************************/
+
 	return 0;
 }

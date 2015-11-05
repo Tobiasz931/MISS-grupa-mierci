@@ -21,7 +21,7 @@ inline bool comp(const Liczba& l1, const Liczba& l2)
     mpz_set(val2, l2.licznik);
     mpz_mul(val2, val2, l1.mianownik);
     int result = mpz_cmp(val1, val2);
-    return (result > 0);
+    return (result >= 0);
 }
 struct comparator
 {
@@ -54,12 +54,12 @@ void wypisz_z_zerami(mpz_t number)
 		charStr = charStr.substr(0, charStr.length()-1);
 	cout << charStr << endl;
 };
-void of_many_kurwas(mpz_t number)
+string get_mpz_t_string(mpz_t number)
 {
     char* chars = NULL;
     chars = mpz_get_str(chars, 10, number);
 	string charStr(chars);
-	cout << charStr << endl;
+	return charStr;
 };
 
 void chi_kwadrat(mpz_t multiplayer)
@@ -227,7 +227,7 @@ int main(int argc, char **argv)
 	}
 	n = v.size();
 	sort(v.begin(), v.end(), comparator());
-	cout << "1" << endl;
+
 //WSPÓLNE MIANOWNIKI ODJEMNYCH I ODJEMNIKÓW:
 	for(int j = 0; j<n; j++)
 	{
@@ -310,13 +310,30 @@ int main(int argc, char **argv)
 /********************LICZENIE TESTU PAR:*************************/
 
 //    int k_pomoc = 3;
+//    int k_pomoc_kwadrat = k_pomoc * k_pomoc;
+//
+//    vector<string> mozliwe_pary;
 //
 //    vector<Liczba> A_pom;
 //    vector<Liczba> V_nowe;
 //    vector<Liczba> Y;
 //    vector<Liczba> P;
 //
-////punkty wyznaczajace przedzialy
+//    mozliwe_pary.push_back(string("00"));//miejsce zerowe bedzie nieuzywane
+////inicjalizacja tablicy pomocniczej do psrawdzania co to za para
+//    for(int i=1; i<=k_pomoc; i++)
+//    {
+//        for(int j=1; j<=k_pomoc; j++)
+//        {
+//            int costam = i*10 + j;
+//            char *para;
+//            sprintf(para, "%d", costam);
+//
+//            mozliwe_pary.push_back(string(para));
+//        }
+//    }
+//
+////punkty wyznaczajace przedzialy - zero niuzywane
 //    for(int i=0; i<=k_pomoc; i++)
 //    {
 //        Liczba a;
@@ -328,27 +345,32 @@ int main(int argc, char **argv)
 //    }
 //
 ////przekonwertowanie wejsciowych ulamkow na numer przedzialu
-//    for(int i=0; i<=n; i++)
+//    for(int i=0; i<n; i++)
 //    {
-//        Liczba v2;
-//        mpz_init(v2.licznik);
-//        mpz_init(v2.mianownik);
-//        mpz_set_si(v2.licznik, i);
-//        mpz_set_si(v2.mianownik, k_pomoc);
-//        V_nowe.push_back(v2);
+//        for(int j=1; j<=k_pomoc; j++)
+//        {
+////jezeli X z wektora v wpada konkretnie w dany przedzial, konwertujemy ta liczbe na numer tego przedzialu
+//            if(((comp(A_pom[j-1], v[i]) == 0) || (comp(A_pom[j-1], v[i]) < 0)) && (comp(A_pom[j], v[i]) > 0))
+//            {
+//                Liczba v2;
+//                mpz_init(v2.licznik);
+//                mpz_init(v2.mianownik);
+//                mpz_set_si(v2.licznik, j);
+//                mpz_set_si(v2.mianownik, 1);
+//                V_nowe.push_back(v2);
+//                break;
+//            }
+//        }
 //    }
 //
-////wyznaczenie prawdopodobienst p_i - rowne sa a_i - a_(i-1)
+//    //jezeli nieparzyscie to usuwamy ostatnia
+//    if(V_nowe.size() % 2 != 0)
+//    {
+//        V_nowe.pop_back();
+//    }
 //
-//        Liczba p;
-//        mpz_init(p.licznik);
-//        mpz_init(p.mianownik);
-//        mpz_set_si(p.licznik, 0);
-//        mpz_set_si(p.mianownik, 0);
-//        P.push_back(p);
-//
-////inicjalizacja wektora Y
-//    for(int i=0; i<=k; i++) //miejsce zerowe bedzie nieuzywane
+//    //inicjalizacja wektora Y
+//    for(int i=0; i<=k_pomoc_kwadrat; i++) //miejsce zerowe bedzie nieuzywane
 //    {
 //        Liczba y;
 //        mpz_init(y.licznik);
@@ -358,18 +380,31 @@ int main(int argc, char **argv)
 //        Y.push_back(y);
 //    }
 //
+//
 //    //wypelnianie wektora Y
-//    for(int i=0; i<=n; i++)
+//    for(int i=0; i<=(n-1); i=i+2)
 //    {
-//        for(int j=1; j<=k; j++)
+//        string para = get_mpz_t_string(V_nowe[i].licznik) + get_mpz_t_string(V_nowe[i+1].licznik);
+//        for(int j=1; j<=k_pomoc_kwadrat; j++)
 //        {
-////jezeli X z wektora v wpada konkretnie w dany przedzial, zwiekszamy licznik
-//            if(((comp(A[j-1], v[i]) == 0) || (comp(A[j-1], v[i]) < 0)) && (comp(A[j], v[i]) > 0))
+//            if(para.compare(mozliwe_pary[j])==0)
 //            {
 //                mpz_add_ui(Y[j].licznik, Y[j].licznik, 1);
 //                break;
 //            }
 //        }
+//    }
+//
+//
+//    //wyznaczenie prawdopodobienst p_i - wszystkie rowne 1/k^2
+//    for(int i=0; i<=k_pomoc; i++) //miejsce zerowe bedzie nieuzywane?
+//    {
+//        Liczba p;
+//        mpz_init(p.licznik);
+//        mpz_init(p.mianownik);
+//        mpz_set_si(p.licznik, 1);
+//        mpz_set_si(p.mianownik, k_pomoc*k_pomoc);
+//        P.push_back(p);
 //    }
 //
 //

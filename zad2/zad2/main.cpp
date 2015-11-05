@@ -32,6 +32,7 @@ struct comparator
 };
 
 int d,n = 0,p = 1;
+vector<Liczba> v;
 
 void wypisz_z_zerami(mpz_t number)
 {
@@ -61,110 +62,8 @@ void of_many_kurwas(mpz_t number)
 	cout << charStr << endl;
 };
 
-int main(int argc, char **argv)
+void chi_kwadrat(mpz_t multiplayer)
 {
-	if(argc > 1)
-	{
-		d = atoi(argv[1]);
-	}
-	else //d na sztywno jeśli parametr nie zostanie podany
-	{
-        d = 5;
-	}
-	string num, licznikStr, mianownikStr;
-	vector<Liczba> v, KplusVec, KminusVec;
-    bool mian = true;
-    Liczba l;
-
-/*********************WCZYTYWANIE, SORTOWANIE I LICZENIE:***************************/
-
-	while(cin >> num)
-	{
-        for(int i = 0; i < num.size(); i++)
-        {
-            if(num[i] == '/')
-            {
-                licznikStr = num.substr(0, i);
-                mianownikStr = num.substr(i + 1, num.size());
-                break;
-            }
-        }
-        mpz_init(l.licznik);
-        mpz_set_str (l.licznik, licznikStr.c_str(), 10);
-        mpz_init(l.mianownik);
-        mpz_set_str (l.mianownik, mianownikStr.c_str(), 10);
-        mian = true;
-        v.push_back(l);
-	}
-	n = v.size();
-	sort(v.begin(), v.end(), comparator());
-//WSPÓLNE MIANOWNIKI ODJEMNYCH I ODJEMNIKÓW:
-	for(int j = 0; j<n; j++)
-	{
-        Liczba x;
-        mpz_init(x.licznik);
-        mpz_init(x.mianownik);
-        mpz_set_si(x.licznik, j+1);
-        mpz_set_si(x.mianownik, n);
-        mpz_mul(x.licznik, x.licznik, v[j].mianownik);
-        mpz_t odjemnik;
-        mpz_init(odjemnik);
-        mpz_set(odjemnik, v[j].licznik);
-        mpz_mul(odjemnik, odjemnik, x.mianownik);
-        mpz_sub(x.licznik, x.licznik, odjemnik);
-        mpz_mul(x.mianownik, x.mianownik, v[j].mianownik);
-        KplusVec.push_back(x);
-	}
-	int KplusIndex = 0;
-	for(int i = 1; i < n; i++)
-	{
-        if(comp(KplusVec[i], KplusVec[KplusIndex]))
-            KplusIndex = i;
-	}
-
-		for(int j = 0; j<n; j++)
-	{
-        Liczba x;
-        mpz_init(x.licznik);
-        mpz_init(x.mianownik);
-        mpz_set(x.licznik, v[j].licznik);
-        mpz_set(x.mianownik, v[j].mianownik);
-        mpz_mul_si(x.licznik, x.licznik, n);
-        mpz_t odjemnik;
-        mpz_init(odjemnik);
-        mpz_set_si(odjemnik, j);
-        mpz_mul(odjemnik, odjemnik, x.mianownik);
-        mpz_sub(x.licznik, x.licznik, odjemnik);
-        mpz_mul_si(x.mianownik, x.mianownik, n);
-        KminusVec.push_back(x);
-	}
-	int KminusIndex = 0;
-	for(int i = 1; i < n; i++)
-	{
-        if(comp(KminusVec[i], KminusVec[KminusIndex]))
-            KminusIndex = i;
-	}
-//DOPISANIE ZER:
-	string multiplayerStr = "1";
-	mpz_t multiplayer, Kplus, Kminus;
-	mpz_init(multiplayer);
-	mpz_init(Kplus);
-	mpz_init(Kminus);
-	for(int i = 0; i < d; i++)
-    {
-        multiplayerStr += '0';
-    }
-    mpz_set_str (multiplayer, multiplayerStr.c_str(), 10);
-//OBLICZENIE K+ i K-
-    mpz_set(Kplus, KplusVec[KplusIndex].licznik);
-    mpz_mul(Kplus, Kplus, multiplayer);
-    mpz_tdiv_q(Kplus, Kplus, KplusVec[KplusIndex].mianownik);
-
-    mpz_set(Kminus, KminusVec[KminusIndex].licznik);
-    mpz_mul(Kminus, Kminus, multiplayer);
-    mpz_tdiv_q(Kminus, Kminus, KminusVec[KminusIndex].mianownik);
-
-/********************LICZENIE CHI KWADRAT:*************************/
     int k = 10;
     vector<Liczba> A;
     vector<Liczba> Y;
@@ -214,8 +113,9 @@ int main(int argc, char **argv)
         mpz_set_si(y.mianownik, 1);
         Y.push_back(y);
     }
+
 //wypelnianie wektora Y
-    for(int i=0; i<=n; i++)
+    for(int i=0; i<n; i++)
     {
         for(int j=1; j<=k; j++)
         {
@@ -287,15 +187,195 @@ int main(int argc, char **argv)
     mpz_init(V_result);
     mpz_tdiv_q(V_result, V_sum.licznik, V_sum.mianownik);
 
+    wypisz_z_zerami(V_result);
+}
+
+int main(int argc, char **argv)
+{
+	if(argc > 1)
+	{
+		d = atoi(argv[1]);
+	}
+	else //d na sztywno jeśli parametr nie zostanie podany
+	{
+        d = 5;
+	}
+	string num, licznikStr, mianownikStr;
+	vector<Liczba> KplusVec, KminusVec;
+    bool mian = true;
+    Liczba l;
+
+/*********************WCZYTYWANIE, SORTOWANIE I LICZENIE:***************************/
+
+	while(cin >> num)
+	{
+        for(int i = 0; i < num.size(); i++)
+        {
+            if(num[i] == '/')
+            {
+                licznikStr = num.substr(0, i);
+                mianownikStr = num.substr(i + 1, num.size());
+                break;
+            }
+        }
+        mpz_init(l.licznik);
+        mpz_set_str (l.licznik, licznikStr.c_str(), 10);
+        mpz_init(l.mianownik);
+        mpz_set_str (l.mianownik, mianownikStr.c_str(), 10);
+        mian = true;
+        v.push_back(l);
+	}
+	n = v.size();
+	sort(v.begin(), v.end(), comparator());
+	cout << "1" << endl;
+//WSPÓLNE MIANOWNIKI ODJEMNYCH I ODJEMNIKÓW:
+	for(int j = 0; j<n; j++)
+	{
+        Liczba x;
+        mpz_init(x.licznik);
+        mpz_init(x.mianownik);
+        mpz_set_si(x.licznik, j+1);
+        mpz_set_si(x.mianownik, n);
+        mpz_mul(x.licznik, x.licznik, v[j].mianownik);
+        mpz_t odjemnik;
+        mpz_init(odjemnik);
+        mpz_set(odjemnik, v[j].licznik);
+        mpz_mul(odjemnik, odjemnik, x.mianownik);
+        mpz_sub(x.licznik, x.licznik, odjemnik);
+        mpz_mul(x.mianownik, x.mianownik, v[j].mianownik);
+        KplusVec.push_back(x);
+	}
+	int KplusIndex = 0;
+	for(int i = 1; i < n; i++)
+	{
+        if(comp(KplusVec[i], KplusVec[KplusIndex]))
+            KplusIndex = i;
+	}
+
+		for(int j = 0; j<n; j++)
+	{
+        Liczba x;
+        mpz_init(x.licznik);
+        mpz_init(x.mianownik);
+        mpz_set(x.licznik, v[j].licznik);
+        mpz_set(x.mianownik, v[j].mianownik);
+        mpz_mul_si(x.licznik, x.licznik, n);
+        mpz_t odjemnik;
+        mpz_init(odjemnik);
+        mpz_set_si(odjemnik, j);
+        mpz_mul(odjemnik, odjemnik, x.mianownik);
+        mpz_sub(x.licznik, x.licznik, odjemnik);
+        mpz_mul_si(x.mianownik, x.mianownik, n);
+        KminusVec.push_back(x);
+	}
+	int KminusIndex = 0;
+	for(int i = 1; i < n; i++)
+	{
+        if(comp(KminusVec[i], KminusVec[KminusIndex]))
+            KminusIndex = i;
+	}
+//DOPISANIE ZER:
+	string multiplayerStr = "1";
+	mpz_t multiplayer, Kplus, Kminus;
+	mpz_init(multiplayer);
+	mpz_init(Kplus);
+	mpz_init(Kminus);
+	for(int i = 0; i < d; i++)
+    {
+        multiplayerStr += '0';
+    }
+
+    mpz_set_str (multiplayer, multiplayerStr.c_str(), 10);
+//OBLICZENIE K+ i K-
+    mpz_set(Kplus, KplusVec[KplusIndex].licznik);
+    mpz_mul(Kplus, Kplus, multiplayer);
+    mpz_tdiv_q(Kplus, Kplus, KplusVec[KplusIndex].mianownik);
+
+    mpz_set(Kminus, KminusVec[KminusIndex].licznik);
+    mpz_mul(Kminus, Kminus, multiplayer);
+    mpz_tdiv_q(Kminus, Kminus, KminusVec[KminusIndex].mianownik);
+
+/********************LICZENIE CHI KWADRAT:*************************/
+    chi_kwadrat(multiplayer); //i wypisywanie tez
+
 /********************KONIEC LICZENIA CHI KWADRAT:*************************/
 
 /*********************WYPISYWANIE:***************************/
 
-    wypisz_z_zerami(V_result);
 	wypisz_z_zerami(Kplus);
 	wypisz_z_zerami(Kminus);
 
 /********************KONIEC WYPISYWANIA:*************************/
+
+/********************LICZENIE TESTU PAR:*************************/
+
+//    int k_pomoc = 3;
+//
+//    vector<Liczba> A_pom;
+//    vector<Liczba> V_nowe;
+//    vector<Liczba> Y;
+//    vector<Liczba> P;
+//
+////punkty wyznaczajace przedzialy
+//    for(int i=0; i<=k_pomoc; i++)
+//    {
+//        Liczba a;
+//        mpz_init(a.licznik);
+//        mpz_init(a.mianownik);
+//        mpz_set_si(a.licznik, i);
+//        mpz_set_si(a.mianownik, k_pomoc);
+//        A_pom.push_back(a);
+//    }
+//
+////przekonwertowanie wejsciowych ulamkow na numer przedzialu
+//    for(int i=0; i<=n; i++)
+//    {
+//        Liczba v2;
+//        mpz_init(v2.licznik);
+//        mpz_init(v2.mianownik);
+//        mpz_set_si(v2.licznik, i);
+//        mpz_set_si(v2.mianownik, k_pomoc);
+//        V_nowe.push_back(v2);
+//    }
+//
+////wyznaczenie prawdopodobienst p_i - rowne sa a_i - a_(i-1)
+//
+//        Liczba p;
+//        mpz_init(p.licznik);
+//        mpz_init(p.mianownik);
+//        mpz_set_si(p.licznik, 0);
+//        mpz_set_si(p.mianownik, 0);
+//        P.push_back(p);
+//
+////inicjalizacja wektora Y
+//    for(int i=0; i<=k; i++) //miejsce zerowe bedzie nieuzywane
+//    {
+//        Liczba y;
+//        mpz_init(y.licznik);
+//        mpz_init(y.mianownik);
+//        mpz_set_si(y.licznik, 0);
+//        mpz_set_si(y.mianownik, 1);
+//        Y.push_back(y);
+//    }
+//
+//    //wypelnianie wektora Y
+//    for(int i=0; i<=n; i++)
+//    {
+//        for(int j=1; j<=k; j++)
+//        {
+////jezeli X z wektora v wpada konkretnie w dany przedzial, zwiekszamy licznik
+//            if(((comp(A[j-1], v[i]) == 0) || (comp(A[j-1], v[i]) < 0)) && (comp(A[j], v[i]) > 0))
+//            {
+//                mpz_add_ui(Y[j].licznik, Y[j].licznik, 1);
+//                break;
+//            }
+//        }
+//    }
+//
+//
+//    chi_kwadrat(multiplayer); //i wypisywanie tez
+
+/********************KONIEC LICZENIA TESTU PAR:*************************/
 
 	return 0;
 }

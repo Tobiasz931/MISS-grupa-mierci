@@ -53,6 +53,13 @@ void wypisz_z_zerami(mpz_t number)
 		charStr = charStr.substr(0, charStr.length()-1);
 	cout << charStr << endl;
 };
+void of_many_kurwas(mpz_t number)
+{
+    char* chars = NULL;
+    chars = mpz_get_str(chars, 10, number);
+	string charStr(chars);
+	cout << charStr << endl;
+};
 
 int main(int argc, char **argv)
 {
@@ -161,12 +168,7 @@ int main(int argc, char **argv)
     int k = 10;
     vector<Liczba> A;
     vector<Liczba> Y;
-    //wg eti2011 prawd. tu wszedzie jest rowne i wynosi 1/l.przedzialow = 1/k, wiec zrobie jedno p
-    Liczba p;
-    mpz_init(p.licznik);
-    mpz_init(p.mianownik);
-    mpz_set_si(p.licznik, 1);
-    mpz_set_si(p.mianownik, k);
+    vector<Liczba> P;
 
 //punkty wyznaczajace przedzialy
     for(int i=0; i<=k; i++)
@@ -177,15 +179,31 @@ int main(int argc, char **argv)
         mpz_set_si(a.licznik, i*i);
         mpz_set_si(a.mianownik, 100);
         A.push_back(a);
-
-//        char* chars = NULL;
-//    chars = mpz_get_str(chars, 10, a.licznik);
-//	string charStr(chars);
-//	cout << charStr << '\\' << endl;
-//	chars = mpz_get_str(chars, 10, a.mianownik);
-//	string charStr2(chars);
-//	cout << charStr2 << endl;
     }
+//wyznaczenie prawdopodobienst p_i - rowne sa a_i - a_(i-1)
+
+        Liczba p;
+        mpz_init(p.licznik);
+        mpz_init(p.mianownik);
+        mpz_set_si(p.licznik, 0);
+        mpz_set_si(p.mianownik, 0);
+        P.push_back(p);
+
+    for(int i=1; i<=k; i++) //miejsce zerowe bedzie nieuzywane
+    {
+        mpz_t licznik;
+        mpz_init(licznik);
+        mpz_set(licznik, A[i].licznik);
+        mpz_sub(licznik, licznik, A[i-1].licznik);
+
+        Liczba p;
+        mpz_init(p.licznik);
+        mpz_init(p.mianownik);
+        mpz_set(p.licznik, licznik);
+        mpz_set_si(p.mianownik, 100);
+        P.push_back(p);
+    }
+
 //inicjalizacja wektora Y
     for(int i=0; i<=k; i++) //miejsce zerowe bedzie nieuzywane
     {
@@ -209,57 +227,71 @@ int main(int argc, char **argv)
             }
         }
     }
-//    for(int j=1; j<=k; j++)
-//        {
-//        Liczba z;
-//        mpz_init(z.licznik);
-//        mpz_init(z.mianownik);
-//        mpz_set(z.licznik, Y[j].licznik);
-//        mpz_set(z.mianownik, Y[j].mianownik);
-//    char* chars = NULL;
-//    chars = mpz_get_str(chars, 10, z.licznik);
-//	string charStr(chars);
-//	cout << j << ": " << charStr << " na ";
-//	chars = mpz_get_str(chars, 10, z.mianownik);
-//	string charStr2(chars);
-//	cout << charStr2 << endl;
-//	}
 
 //obliczanie V - rozwiniety wzor. Oryginalnie bylo suma (Yi - n*pi)^2/ n*pi
-//pamietajac ze nasze Y ma w mianowniku 1 a kazde p_i to 1/k
-//wiec zeby bylo tylko jedno dzielenie to przeksztalcone do suma k(ky-n)^2 / n
-//gdzie y to liczba z licznika Y, a ze mianownik wspolny to nawet przeksztalcac nie trzeba
+//pamietajac ze nasze Y ma w mianowniku 1
+//wiec zeby bylo tylko jedno dzielenie to przeksztalcone do suma (p.mianownik * y - n * p.licznik)^2 / n * p.licznik * p.mianownik
+//gdzie y to liczba z licznika Y
 
-    Liczba V;
-    mpz_init(V.licznik);
-    mpz_init(V.mianownik);
-    mpz_set_si(V.licznik, 0);
-    mpz_set_si(V.mianownik, n);
+    vector<Liczba> V; //ciag zsumujemy na koncu, tu beda jego kolejne elementy
 
     for(int i=1; i<=k; i++)
     {
-        mpz_t licznik;
-        mpz_init(licznik);
-        mpz_set_si(licznik, k);
-        mpz_mul(licznik, licznik, Y[i].licznik);
-        mpz_sub_ui(licznik, licznik, n);
-        mpz_mul(licznik, licznik, licznik);
-        mpz_mul_ui(licznik, licznik, k);
-        mpz_add(V.licznik, V.licznik, licznik);
+        mpz_t n_p_licznik;
+        mpz_init(n_p_licznik);
+        mpz_set_si(n_p_licznik, n);
+        mpz_mul(n_p_licznik, n_p_licznik, P[i].licznik);
+
+        Liczba kupa;
+        mpz_init(kupa.licznik);
+        mpz_init(kupa.mianownik);
+        mpz_set(kupa.licznik, P[i].mianownik);
+        mpz_mul(kupa.licznik, kupa.licznik, Y[i].licznik);
+        mpz_sub(kupa.licznik, kupa.licznik, n_p_licznik);
+        mpz_mul(kupa.licznik, kupa.licznik, kupa.licznik);
+
+        mpz_set_si(kupa.mianownik, n);
+        mpz_mul(kupa.mianownik, kupa.mianownik, P[i].licznik);
+        mpz_mul(kupa.mianownik, kupa.mianownik, P[i].mianownik);
+
+        V.push_back(kupa);
+    }
+    //teraz trzeba to posumowac, ale to wymaga wspolnego mianownika
+    int V_size = V.size();
+    Liczba V_sum;
+    mpz_init(V_sum.licznik);
+    mpz_init(V_sum.mianownik);
+    mpz_set_si(V_sum.licznik, 0);
+    mpz_set_si(V_sum.mianownik, 1);
+
+    for(int i=0; i<V_size; i++)
+    {
+        mpz_t val2;
+        mpz_init(val2);
+
+        mpz_set(val2, V[i].licznik);
+        mpz_mul(val2, val2, V_sum.mianownik);
+
+        mpz_mul(V_sum.licznik, V_sum.licznik, V[i].mianownik);
+        mpz_add(V_sum.licznik, V_sum.licznik, val2);
+
+        mpz_mul(V_sum.mianownik, V_sum.mianownik, V[i].mianownik);
 
     }
-//dopisanie zer
-    mpz_mul(V.licznik, V.licznik, multiplayer);
 
-    mpz_t V_sum;
-    mpz_init(V_sum);
-    mpz_tdiv_q(V_sum, V.licznik, V.mianownik);
+
+//dopisanie zer
+    mpz_mul(V_sum.licznik, V_sum.licznik, multiplayer);
+
+    mpz_t V_result;
+    mpz_init(V_result);
+    mpz_tdiv_q(V_result, V_sum.licznik, V_sum.mianownik);
 
 /********************KONIEC LICZENIA CHI KWADRAT:*************************/
 
 /*********************WYPISYWANIE:***************************/
 
-    wypisz_z_zerami(V_sum);
+    wypisz_z_zerami(V_result);
 	wypisz_z_zerami(Kplus);
 	wypisz_z_zerami(Kminus);
 

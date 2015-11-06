@@ -309,106 +309,106 @@ int main(int argc, char **argv)
 
 /********************LICZENIE TESTU PAR:*************************/
 
-//    int k_pomoc = 3;
-//    int k_pomoc_kwadrat = k_pomoc * k_pomoc;
-//
-//    vector<string> mozliwe_pary;
-//
-//    vector<Liczba> A_pom;
-//    vector<Liczba> V_nowe;
-//    vector<Liczba> Y;
-//    vector<Liczba> P;
-//
-//    mozliwe_pary.push_back(string("00"));//miejsce zerowe bedzie nieuzywane
-////inicjalizacja tablicy pomocniczej do psrawdzania co to za para
-//    for(int i=1; i<=k_pomoc; i++)
-//    {
-//        for(int j=1; j<=k_pomoc; j++)
-//        {
-//            int costam = i*10 + j;
-//            char *para;
-//            sprintf(para, "%d", costam);
-//
-//            mozliwe_pary.push_back(string(para));
-//        }
-//    }
-//
-////punkty wyznaczajace przedzialy - zero niuzywane
-//    for(int i=0; i<=k_pomoc; i++)
-//    {
-//        Liczba a;
-//        mpz_init(a.licznik);
-//        mpz_init(a.mianownik);
-//        mpz_set_si(a.licznik, i);
-//        mpz_set_si(a.mianownik, k_pomoc);
-//        A_pom.push_back(a);
-//    }
-//
-////przekonwertowanie wejsciowych ulamkow na numer przedzialu
-//    for(int i=0; i<n; i++)
-//    {
-//        for(int j=1; j<=k_pomoc; j++)
-//        {
-////jezeli X z wektora v wpada konkretnie w dany przedzial, konwertujemy ta liczbe na numer tego przedzialu
-//            if(((comp(A_pom[j-1], v[i]) == 0) || (comp(A_pom[j-1], v[i]) < 0)) && (comp(A_pom[j], v[i]) > 0))
-//            {
-//                Liczba v2;
-//                mpz_init(v2.licznik);
-//                mpz_init(v2.mianownik);
-//                mpz_set_si(v2.licznik, j);
-//                mpz_set_si(v2.mianownik, 1);
-//                V_nowe.push_back(v2);
-//                break;
-//            }
-//        }
-//    }
-//
-//    //jezeli nieparzyscie to usuwamy ostatnia
-//    if(V_nowe.size() % 2 != 0)
-//    {
-//        V_nowe.pop_back();
-//    }
-//
-//    //inicjalizacja wektora Y
-//    for(int i=0; i<=k_pomoc_kwadrat; i++) //miejsce zerowe bedzie nieuzywane
-//    {
-//        Liczba y;
-//        mpz_init(y.licznik);
-//        mpz_init(y.mianownik);
-//        mpz_set_si(y.licznik, 0);
-//        mpz_set_si(y.mianownik, 1);
-//        Y.push_back(y);
-//    }
-//
-//
-//    //wypelnianie wektora Y
-//    for(int i=0; i<=(n-1); i=i+2)
-//    {
-//        string para = get_mpz_t_string(V_nowe[i].licznik) + get_mpz_t_string(V_nowe[i+1].licznik);
-//        for(int j=1; j<=k_pomoc_kwadrat; j++)
-//        {
-//            if(para.compare(mozliwe_pary[j])==0)
-//            {
-//                mpz_add_ui(Y[j].licznik, Y[j].licznik, 1);
-//                break;
-//            }
-//        }
-//    }
-//
-//
-//    //wyznaczenie prawdopodobienst p_i - wszystkie rowne 1/k^2
-//    for(int i=0; i<=k_pomoc; i++) //miejsce zerowe bedzie nieuzywane?
-//    {
-//        Liczba p;
-//        mpz_init(p.licznik);
-//        mpz_init(p.mianownik);
-//        mpz_set_si(p.licznik, 1);
-//        mpz_set_si(p.mianownik, k_pomoc*k_pomoc);
-//        P.push_back(p);
-//    }
-//
-//
-//    chi_kwadrat(multiplayer); //i wypisywanie tez
+    int k_pomoc = 3;
+    int k_pomoc_kwadrat = k_pomoc * k_pomoc;
+
+    vector<string> mozliwe_pary;
+
+    vector<Liczba> A_pom;
+    vector<Liczba> V_nowe;
+    vector<Liczba> Y;
+    vector<Liczba> P;
+
+    mozliwe_pary.push_back(string("00"));//miejsce zerowe bedzie nieuzywane
+//inicjalizacja tablicy pomocniczej do psrawdzania co to za para
+    for(int i=1; i<=k_pomoc; i++)
+    {
+        for(int j=1; j<=k_pomoc; j++)
+        {
+            int costam = i*10 + j;
+            char *para;
+            sprintf(para, "%d", costam);
+
+            mozliwe_pary.push_back(string(para));
+        }
+    }
+
+//punkty wyznaczajace przedzialy - zero niuzywane
+    for(int i=0; i<=k_pomoc; i++)
+    {
+        Liczba a;
+        mpz_init(a.licznik);
+        mpz_init(a.mianownik);
+        mpz_set_si(a.licznik, i);
+        mpz_set_si(a.mianownik, k_pomoc);
+        A_pom.push_back(a);
+    }
+
+//przekonwertowanie wejsciowych ulamkow na numer przedzialu
+    for(int i=0; i<n; i++)
+    {
+        for(int j=1; j<=k_pomoc; j++)
+        {
+//jezeli X z wektora v wpada konkretnie w dany przedzial, konwertujemy ta liczbe na numer tego przedzialu
+            if(((comp(A_pom[j-1], v[i]) == 0) || (comp(A_pom[j-1], v[i]) < 0)) && (comp(A_pom[j], v[i]) > 0))
+            {
+                Liczba v2;
+                mpz_init(v2.licznik);
+                mpz_init(v2.mianownik);
+                mpz_set_si(v2.licznik, j);
+                mpz_set_si(v2.mianownik, 1);
+                V_nowe.push_back(v2);
+                break;
+            }
+        }
+    }
+
+    //jezeli nieparzyscie to usuwamy ostatnia
+    if(V_nowe.size() % 2 != 0)
+    {
+        V_nowe.pop_back();
+    }
+
+    //inicjalizacja wektora Y
+    for(int i=0; i<=k_pomoc_kwadrat; i++) //miejsce zerowe bedzie nieuzywane
+    {
+        Liczba y;
+        mpz_init(y.licznik);
+        mpz_init(y.mianownik);
+        mpz_set_si(y.licznik, 0);
+        mpz_set_si(y.mianownik, 1);
+        Y.push_back(y);
+    }
+
+
+    //wypelnianie wektora Y
+    for(int i=0; i<=(n-1); i=i+2)
+    {
+        string para = get_mpz_t_string(V_nowe[i].licznik) + get_mpz_t_string(V_nowe[i+1].licznik);
+        for(int j=1; j<=k_pomoc_kwadrat; j++)
+        {
+            if(para.compare(mozliwe_pary[j])==0)
+            {
+                mpz_add_ui(Y[j].licznik, Y[j].licznik, 1);
+                break;
+            }
+        }
+    }
+
+
+    //wyznaczenie prawdopodobienst p_i - wszystkie rowne 1/k^2
+    for(int i=0; i<=k_pomoc; i++) //miejsce zerowe bedzie nieuzywane?
+    {
+        Liczba p;
+        mpz_init(p.licznik);
+        mpz_init(p.mianownik);
+        mpz_set_si(p.licznik, 1);
+        mpz_set_si(p.mianownik, k_pomoc*k_pomoc);
+        P.push_back(p);
+    }
+
+
+    chi_kwadrat(multiplayer); //i wypisywanie tez
 
 /********************KONIEC LICZENIA TESTU PAR:*************************/
 

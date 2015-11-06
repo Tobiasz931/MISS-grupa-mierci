@@ -21,7 +21,7 @@ inline bool comp(const Liczba& l1, const Liczba& l2)
     mpz_set(val2, l2.licznik);
     mpz_mul(val2, val2, l1.mianownik);
     int result = mpz_cmp(val1, val2);
-    return (result > 0);
+    return (result >= 0);
 }
 struct comparator
 {

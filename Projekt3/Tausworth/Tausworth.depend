@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1447965342 source:/home/ania/Desktop/Projekty/Projekt3/Tausworth/main.cpp
+	<stdio.h>
+	<iostream>
+	<string>
+	<cstdio>
+	<cstdlib>
+

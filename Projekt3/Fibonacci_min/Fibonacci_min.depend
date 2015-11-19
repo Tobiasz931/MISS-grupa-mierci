@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1447959287 source:/home/ania/Desktop/Projekty/Projekt3/Fibonacci_min/main.cpp
+	<stdio.h>
+	<iostream>
+	<string>
+	<cstdio>
+	<cstdlib>
+

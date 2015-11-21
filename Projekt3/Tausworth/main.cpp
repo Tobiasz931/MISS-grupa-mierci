@@ -63,29 +63,29 @@ int main(int argc, char **argv)
 	for (int j = k; j <liczba_max; j++)
 	{
 		int result = 0;
-		printf("b%d = ", j);
+		//printf("b%d = ", j);
 		for (int i=1; i <= k; i++)
 		{
 			result += a[i] * LFSRs[j-i];
-			if (a[i] != 0)
-			{
-                printf("b%d ", j-i);
-			}
+//			if (a[i] != 0)
+//			{
+//                printf("b%d ", j-i);
+//			}
 		}
-		printf("\n");
+		//printf("\n");
 		LFSRs[j] = result % 2;
 	}
 /*********************WYPISYWANIE***************************/
-int z=0;
+//int z=0;
 for (int i = liczba_min; i <liczba_max; i++)
 	{
-        z++;
+        //z++;
 		printf("%d ", LFSRs[i]);
-		if (z%7 == 0)
-		{
-            z = 0;
-            printf(" ");
-		}
+//		if (z%7 == 0)
+//		{
+//            z = 0;
+//            printf(" ");
+//		}
 	}
 /*********************SPRZATANIE***************************/
 	delete[] LFSRs;

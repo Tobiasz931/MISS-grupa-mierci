@@ -3,34 +3,18 @@
 #include <string>
 #include <cstdio>
 #include <cstdlib>
-#include <cmath>
-#include <stdlib.h>
 
 using namespace std;
 
-void print_binary_to_decimal(long n) /* Function to convert binary to decimal.*/
-{
-    int decimal=0, i=0, rem;
-    while (n!=0)
-    {
-        rem = n%10;
-        n/=10;
-        decimal += rem*pow(2,i);
-        ++i;
-    }
-    printf("%d ", decimal);
-    return;
-}
-
 int main(int argc, char **argv)
 {
-	unsigned int *a;
+	unsigned int *LFGs;
 	unsigned int *LFSRs;
+	unsigned int *results;
 
 
 /*********************WCZYTYWANIE***************************/
-//kolejnosc parametrow: n-m k a1 a2 (...) ak LFSR0 LFSR1 (...) LFSRk-1
-//n-m powinno zawierac wielokrotnosc 32, bo inaczej nie wiem jak ostatnia liczbe zlozy
+//kolejnosc parametrow: n-m k LFG0 LFG1 (...) LFGk-1 LFSR0 LFSR1 (...) LFSRk-1
 	string num, nStr, mStr;
 	unsigned int liczba_min,liczba_max,k;
 	num = string(argv[1]);
@@ -48,13 +32,12 @@ int main(int argc, char **argv)
 	liczba_max = atoi(mStr.c_str());
 	k = atoi(argv[2]);
 
-	a = new unsigned int[k+1];
+	LFGs = new unsigned int[k+1];
 
-	int index = 1;
-	a[0] = 0; //bo we wzorze idzie od 1
+	int index = 0;
 	int LFSRs_start_index = k+3;
 	for (int i = 3; i < (LFSRs_start_index); i++) {
-        a[index] = (atoi(argv[i]));
+        LFGs[index] = (atoi(argv[i]));
         index++;
     }
 
@@ -76,36 +59,19 @@ int main(int argc, char **argv)
 		}
 	}
 /*********************LICZENIE***************************/
-	for (int j = k; j <liczba_max; j++)
+	for (int j = 0; j <k; j++)
 	{
-		int result = 0;
-		//printf("b%d = ", j);
-		for (int i=1; i <= k; i++)
-		{
-			result += a[i] * LFSRs[j-i];
-		}
-		LFSRs[j] = result % 2;
+		int result = LFGs[j] - LFSRs[j];
+		results[j] = result;
 	}
 /*********************WYPISYWANIE***************************/
-int z=0, next_bin;
-string binary_str;
-
 for (int i = liczba_min; i <liczba_max; i++)
 	{
-        next_bin = LFSRs[i];
-        string tmp; // brzydkie rozwiązanie
-        sprintf((char*)tmp.c_str(), "%d", next_bin);
-        string str = tmp.c_str();
-        binary_str = binary_str + str;
-        z++;
-		if (z == 31)
-		{
-            z = 0;
-            printf("%llu ", strtoull(binary_str.c_str(), NULL, 2));
-		}
+		printf("%d ", results[i]);
 	}
 /*********************SPRZATANIE***************************/
 	delete[] LFSRs;
-	delete[] a;
+	delete[] LFGs;
+	delete[] results;
 	return 0;
 }

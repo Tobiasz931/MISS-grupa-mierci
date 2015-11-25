@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1448466757 source:/home/ania/MISS-grupa-mierci/Projekt3/Kolmogorow_pelny/main.cpp
+	<algorithm>
+	<gmp.h>
+

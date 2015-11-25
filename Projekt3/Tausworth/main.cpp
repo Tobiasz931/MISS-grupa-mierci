@@ -32,7 +32,8 @@ int main(int argc, char **argv)
 //kolejnosc parametrow: n-m k a1 a2 (...) ak LFSR0 LFSR1 (...) LFSRk-1
 //n-m powinno zawierac wielokrotnosc 32, bo inaczej nie wiem jak ostatnia liczbe zlozy
 	string num, nStr, mStr;
-	unsigned int liczba_min,liczba_max,k;
+	unsigned int k;
+	unsigned long long int liczba_min,liczba_max;
 	num = string(argv[1]);
 	for(int i = 0; i < num.size(); i++)
 	{
@@ -44,8 +45,10 @@ int main(int argc, char **argv)
 		}
 	}
 
-	liczba_min = atoi(nStr.c_str());
-	liczba_max = atoi(mStr.c_str());
+	liczba_min = strtoull(nStr.c_str(), NULL, 10);
+
+	liczba_max = strtoull(mStr.c_str(), NULL, 10);
+
 	k = atoi(argv[2]);
 
 	a = new unsigned int[k+1];
@@ -98,10 +101,11 @@ for (int i = liczba_min; i <liczba_max; i++)
         string str = tmp.c_str();
         binary_str = binary_str + str;
         z++;
-		if (z == 31)
+		if (z == 32)
 		{
             z = 0;
             printf("%llu ", strtoull(binary_str.c_str(), NULL, 2));
+            binary_str = "";
 		}
 	}
 /*********************SPRZATANIE***************************/

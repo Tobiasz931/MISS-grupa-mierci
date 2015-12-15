@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1450215942 source:/home/ania/MISS-grupa-mierci/Projekt4/Euler/main.cpp
+	<stdio.h>
+	<iostream>
+	<fstream>
+	<cstdlib>
+	<string>
+

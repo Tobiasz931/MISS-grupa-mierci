@@ -50,6 +50,6 @@ int main(int argc, char **argv)
 	}
 	output_file.close();
 /*********************WYPISYWANIE***************************/
-	system("gnuplot -p -e \"plot './euler.pg' with lines\"");
+	system("gnuplot -p -e \"set title 'Metoda Eulera'; set xlabel 'x'; set ylabel 'y'; plot './euler.pg' with lines\"");
 	return 0;
 }
